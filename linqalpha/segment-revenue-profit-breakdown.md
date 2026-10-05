@@ -90,8 +90,46 @@ Use ↑ / → / ↓ and High / Med / Low.
 ### 7. Questions for the deep dive
 5–10 sharp, specific questions the data raises but does not answer, grouped by segment, plus any **data gaps or disclosure changes** found.
 
-## Style
-- Numbers in tables, consistent units (e.g. $m), one decimal for percentages.
-- Bold the single most important takeaway per segment.
-- Total length: thorough, but every line must carry information. No cover page, no generic industry boilerplate.
-- End with a **source list** (document, date, section).
+## Output format: one interactive HTML page
+Deliver the final output as **one self-contained `.html` file** that opens in any browser. Sections 1–7 above are the content. This section sets how they are shown.
+
+### Build rules
+- One file. All CSS and JS inline. The only external file allowed is **Chart.js** from `https://cdn.jsdelivr.net/npm/chart.js`. No other libraries, fonts or images.
+- **Data first:** put every number in one `const DATA = {...}` JSON object at the top of the script. Each value carries its `source` and a `derived: true/false` flag. Build every chart and table from `DATA`, so each number appears in one place and can be traced.
+- Any number that is not disclosed is shown as "n/d" (not disclosed), never as zero or a blank bar.
+- Works at phone width and on a laptop. Clean, minimal design: white or neutral background, one accent colour per segment, used the same way in every chart. **No cover page or hero banner.** The page opens straight onto the snapshot.
+
+### Layout
+1. **Sticky header:** company name, ticker, reporting currency, period covered, date generated. Buttons to jump to each section.
+2. **KPI tiles:** latest revenue, YoY growth, operating margin, adj. EBITDA margin and free cash flow. Each tile has a small 3-year trend line inside it.
+3. **Segment mix:**
+   - Stacked bar of revenue by segment over time.
+   - Two donuts side by side, **share of revenue vs. share of segment profit**, with gaps between the two called out.
+   - A **toggle** between revenue, segment profit and margin.
+4. **Segment tabs:** one tab per segment, each holding its deep-dive (section 4):
+   - KPI driver tree drawn as a simple diagram (e.g. Revenue → Volume × Price/Mix), with latest values and YoY change on each box.
+   - **Waterfall chart** of revenue growth attribution (volume, price, mix, FX, M&A).
+   - **Waterfall chart** of the margin bridge from prior year to current year.
+   - Line chart of segment margin over time.
+   - Qualitative drivers as short cards, labelled **Fact**, **Management** or **Interpretation**.
+5. **Bridge from segments to EPS:** a waterfall from total segment profit to operating income, showing corporate costs, SBC and amortization.
+6. **Heat map:** the cross-segment synthesis table from section 6, colour-coded (green / amber / red) with the ↑ → ↓ arrows kept, so it still reads without colour.
+7. **Deep-dive questions:** a checklist grouped by segment. Ticking a box crosses the item out.
+8. **Sources:** numbered list. Every number and chart point links to its source number.
+
+### Interaction
+- **Hover tooltips** on every chart point and table cell: exact value, units, period, source, and the formula if derived.
+- **Period selector** (FY / latest quarter / LTM) that updates the tiles and tables where that data exists.
+- Sortable tables (click a column header to sort).
+- Collapsible sections, all open by default.
+- A **"Print / save as PDF"** button. The print style expands every tab and hides the controls.
+- Light and dark mode, following the reader's system setting.
+
+### Style
+- Consistent units (e.g. $m), one decimal for percentages, negatives in brackets.
+- Bold the single most important takeaway per segment, and pin it at the top of that segment's tab.
+- Short headings that state the finding (e.g. "Cloud is 28% of revenue but 51% of profit"), not generic labels.
+- Thorough, but every element must carry information. No decorative charts and no generic industry boilerplate.
+
+### Fallback
+If HTML cannot be rendered or attached here, return the same content as Markdown tables in the same section order. Then include the complete HTML file in a single code block so it can be saved and opened locally.
