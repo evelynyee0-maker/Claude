@@ -10,7 +10,7 @@
 - **Application focus:** AI **scale-up** fabric, meaning GPU/XPU-to-GPU/XPU and GPU-to-switch links inside one coherent domain (e.g., NVLink, UALink, Scale-Up Ethernet / ESUN). Scale-out (front-end/back-end Ethernet, InfiniBand) only as comparison.
 - **Time horizon:** 2025 (current) → 2028 (volume ramp), with a view to 2030.
 - **Geography:** Global. Flag US / Taiwan / China / Japan / Korea / EU exposure and export-control relevance.
-- **Output language/format:** English, tables-first, diagrams wherever possible. **No cover page.**
+- **Output language/format:** English. **One self-contained HTML file**, tables-first, diagrams wherever possible. **No cover page.**
 
 ## ROLE
 You are a senior semiconductor and optical-interconnect supply-chain analyst. You have worked on silicon photonics, advanced packaging, and hyperscale data-center procurement. You write for an investment and strategy audience who want evidence, not hype.
@@ -79,8 +79,29 @@ Rules:
 5. Do not invent market-share numbers. If no reliable figure exists, say *"no public data"* and give a reasoned range labeled as an estimate.
 6. End with a **"Known unknowns"** section: the questions the public evidence cannot answer, and how to answer them (expert calls, teardown, channel checks).
 
-## OUTPUT FORMAT
-- No cover page. Start straight away with a 150-word **Executive Summary** plus a one-glance **value-chain diagram**.
-- Use tables for all comparisons and Mermaid for flows, relationships, and timelines. Add charts (stacked bar, heatmap, Gantt) for cost, scoring, and adoption.
-- Use H2 per step and keep the prose tight.
-- Appendix: full source list, numbered, with access dates.
+## OUTPUT FORMAT: a single self-contained HTML file
+Deliver the whole report as **one `.html` file** that opens straight in a browser. Output only the HTML, in one code block, with no commentary before or after it.
+
+**Structure**
+- No cover page. The page opens with a slim header (title, "as of" date, scope line), then a 150-word **Executive Summary** and a one-glance **value-chain diagram**.
+- Put a sticky table of contents (sidebar on desktop, collapsible on mobile) with one `<section id="step-N">` and one `<h2>` per step.
+- Appendix: a numbered source list with access dates. Make every inline citation a clickable superscript (`<sup><a href="#src-12">[12]</a></sup>`) that jumps to its entry, and make every source entry link to the original URL.
+
+**Libraries** (load from CDN only, with no other external files)
+- **Mermaid** (`https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js`): value-chain flowchart, supplier → customer relationship graph, and adoption Gantt. Use solid edges for confirmed links and dashed edges for reported links.
+- **Chart.js** (`https://cdn.jsdelivr.net/npm/chart.js@4`): stacked bar of the cost breakdown and the scenario/adoption charts. Put chart data in inline `<script>` JSON so it can be edited.
+- Keep all CSS inline in one `<style>` block, with no CSS framework.
+
+**Tables**
+- Use real `<table>` elements with `<thead>`, sticky headers and zebra rows, wrapped in a horizontally scrollable container on small screens.
+- Make the player-mapping tables **sortable by column and filterable with a search box**, using about 30 lines of vanilla JS (no library).
+- Render the **Confidence** column as colored badges (High = green, Med = amber, Low = red), and add a "Confirmed" or "Reported" tag to every relationship cell.
+- Build the value-add **scoring heatmap** as a table whose cell backgrounds are shaded from the 1–5 score, with a legend.
+- Put the "Watchlist: unverified" and "Known unknowns" sections in visually distinct callout boxes.
+
+**Design**
+- Clean, simple and modern: a system font stack, max content width of about 1100px, generous whitespace, one accent color, and colors defined as CSS variables.
+- Support light and dark mode with `prefers-color-scheme`.
+- Make it responsive down to phone width, with no horizontal page scroll.
+- Add a `@media print` stylesheet that hides the TOC and search boxes, avoids page breaks inside table rows and diagrams, and prints link URLs in the source list.
+- Keep the prose tight. Every number in a table must carry its citation.
